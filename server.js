@@ -6,7 +6,7 @@ const bootcamps = require("./routes/bootcampsRouter");
 
 const app = express();
 
-// Roteando
+// Definindo Rotas
 app.use("/api/v1/bootcamps", bootcamps);
 
 const PORT = process.env.PORT || 5000;
