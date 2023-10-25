@@ -9,7 +9,7 @@ const BootcampSchema = new mongoose.Schema({
     maxlength: [50, "Nome não pode ser maior que 50 carcteres"],
   },
   slug: String,
-  descripition: {
+  description: {
     type: String,
     required: [true, "Adicione uma descrição no Bootcamp"],
     maxlength: [500, "Descrição não pode ser maior que 500 carcteres"],
@@ -38,11 +38,9 @@ const BootcampSchema = new mongoose.Schema({
     type: {
       type: String,
       enum: ["Point"],
-      required: true,
     },
     coordinates: {
       type: [Number],
-      required: true,
       index: "2dsphere",
     },
     formattedAddress: String,
@@ -57,12 +55,12 @@ const BootcampSchema = new mongoose.Schema({
     type: [String],
     required: true,
     enum: [
-      "Desenolvimento Web",
-      "Desenvolvimento Mobile",
+      "Web Development",
+      "Mobile Development",
       "UI/UX",
       "Data Science",
       "Business",
-      "Outro",
+      "Other",
     ],
   },
   averageRating: {
