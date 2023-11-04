@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const dotenv = require("dotenv").config({ path: "./config/config.env" }); // Carregando Vars de Ambiente
+const { errorHandler } = require("./middleware/error");
 const connectDB = require("./config/db");
 
 //Conectando a DB
@@ -21,6 +22,8 @@ if (process.env.NODE_ENV === "development") {
 
 // Montando Rotas
 app.use("/api/v1/bootcamps", bootcamps);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
