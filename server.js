@@ -1,7 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const dotenv = require("dotenv").config({ path: "./config/config.env" }); // Carregando Vars de Ambiente
-const { errorHandler } = require("./middleware/error");
+const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
 
 //Conectando a DB
