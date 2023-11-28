@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const BootcampSchema = new mongoose.Schema({
   name: {
@@ -93,6 +94,11 @@ const BootcampSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+// Criando slug com o nome do bootcamp e slugify
+BootcampSchema.pre("save", function () {
+  this.slug = slugify(this.name, { lower: true });
 });
 
 // A Fazer: adicionar campo de usuário
