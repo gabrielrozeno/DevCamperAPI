@@ -1,4 +1,5 @@
 const ErrorResponse = require("../utils/errorResponse");
+const geocoder = require("../utils/geocoder");
 const Bootcamp = require("../models/Bootcamp");
 const asyncHandler = require("express-async-handler");
 
@@ -83,4 +84,32 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   }
 
   res.status(200).json({ success: true, data: bootcamp });
+});
+
+// @desc    Buscar Bootcamps por Distância
+// @route   GET /api/v1/bootcamps/radius/:zipcode/:distance
+// @access  PRIVATE
+exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
+  const { zipcode, distance } = req.params;
+
+  // Buscar Lat e Long no geocoder
+  const loc = await geocoder.geocode(zipcode);
+  const lat = loc[0].latitude;
+  const lng = loc[0].longitude;
+
+  // Calcular distância usando radiano
+  // Dividir Distância usando raio da terra
+  // Raio da Terra: 6,378 km | 3,963 mi
+  // Preferi o uso de milhas para explicar melhor para um gringo ¯\_(ツ)_/¯
+  const radius = distance / 3963;
+
+  const bootcamps = await Bootcamp.find({
+    location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+
+  res.status(200).json({
+    success: true,
+    count: bootcamps.length,
+    data: bootcamps,
+  });
 });
