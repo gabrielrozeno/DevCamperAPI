@@ -9,15 +9,43 @@ const asyncHandler = require("express-async-handler");
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
   let query;
 
-  let queryStr = JSON.stringify(req.query);
+  // Copia req.query
+  const reqQuery = { ...req.query };
 
+  // Campos para excluir
+  const removeFields = ["select", "sort"];
+
+  // Loop na array removeFields e deleta os campos indesejados da reqQuery
+  removeFields.forEach((param) => delete reqQuery[param]);
+
+  // Cria a query string
+  let queryStr = JSON.stringify(reqQuery);
+
+  // Cria os operadores ($gt, $gte e etc)
   queryStr = queryStr.replace(
     /\b(gt|gte|lt|lte|in)\b/g,
     (match) => `$${match}`
   );
 
+  // Buscando o Recurso
   query = Bootcamp.find(JSON.parse(queryStr));
 
+  // Se tiver select na req.query, então traga os campos descritos
+  if (req.query.select) {
+    const fields = req.query.select.split(",").join(" ");
+    query = query.select(fields);
+  }
+
+  // Filtrando por condição que vem no sort da req.query
+  if (req.query.sort) {
+    const sortBy = req.query.sort.split(",").join(" ");
+    query = query.sort(sortBy);
+  } else {
+    // Padrão: em ordem descendente pelo createdAt
+    query = query.sort("-createdAt");
+  }
+
+  // Executando a query
   const bootcamps = await query;
   res.status(200).json({
     success: true,
